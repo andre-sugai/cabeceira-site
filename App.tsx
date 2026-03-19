@@ -9,15 +9,17 @@ import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import BemViverPage from './components/BemViverPage';
+import CapacitacaoPage from './components/CapacitacaoPage';
 import PasswordModal from './components/PasswordModal';
 
 import { DEFAULT_IMAGES } from './constants';
 
-type Page = 'home' | 'privacidade' | 'bemviver';
+type Page = 'home' | 'privacidade' | 'bemviver' | 'capacitacao';
 
 const pathToPage = (pathname: string): Page => {
   if (pathname === '/privacidade') return 'privacidade';
   if (pathname === '/bemviver') return 'bemviver';
+  if (pathname === '/capacitacao') return 'capacitacao';
   return 'home';
 };
 
@@ -41,6 +43,8 @@ const App: React.FC = () => {
   // Sync URL → state when user navigates with browser back/forward buttons
   useEffect(() => {
     const handlePopState = () => {
+      // Ignore hash-only changes (anchor links) — let the browser scroll naturally
+      if (window.location.hash) return;
       setCurrentPage(pathToPage(window.location.pathname));
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -54,6 +58,7 @@ const App: React.FC = () => {
     let newPath = '/';
     if (page === 'privacidade') newPath = '/privacidade';
     else if (page === 'bemviver') newPath = '/bemviver';
+    else if (page === 'capacitacao') newPath = '/capacitacao';
     window.history.pushState({}, '', newPath);
     setCurrentPage(page as Page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -87,6 +92,18 @@ const App: React.FC = () => {
     }
     return (
       <BemViverPage
+        toggleDarkMode={toggleDarkMode}
+        isDarkMode={isDarkMode}
+        images={images}
+        onNavigateHome={navigateHome}
+        onNavigate={navigateTo}
+      />
+    );
+  }
+
+  if (currentPage === 'capacitacao') {
+    return (
+      <CapacitacaoPage
         toggleDarkMode={toggleDarkMode}
         isDarkMode={isDarkMode}
         images={images}
